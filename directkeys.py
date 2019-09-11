@@ -5,6 +5,8 @@
 
 import ctypes
 import time
+import win32api
+import pyautogui
 
 SendInput = ctypes.windll.user32.SendInput
 
@@ -13,6 +15,12 @@ W = 0x11
 A = 0x1E
 S = 0x1F
 D = 0x20
+FOUR = 0x05
+THREE = 0x04
+
+
+
+
 
 # C struct redefinitions
 PUL = ctypes.POINTER(ctypes.c_ulong)
@@ -61,8 +69,25 @@ def ReleaseKey(hexKeyCode):
     x = Input( ctypes.c_ulong(1), ii_ )
     ctypes.windll.user32.SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
 
+
+def click():
+    ctypes.windll.user32.mouse_event(0x2, 0, 0, 0, 0)  # Mouse LClick Down, relative coords, dx=0, dy=0
+    ctypes.windll.user32.mouse_event(0x4, 0, 0, 0, 0)  # Mouse LClick Up, relative coords, dx=0, dy=0
+
+# Actuals Functions
+def MouseMoveTo(x, y):
+    extra = ctypes.c_ulong(0)
+    ii_ = Input_I()
+    ii_.mi = MouseInput(x, y, 0, 0x0001, 0, ctypes.pointer(extra))
+
+    command = Input(ctypes.c_ulong(0), ii_)
+    ctypes.windll.user32.SendInput(1, ctypes.pointer(command), ctypes.sizeof(command))
+
 if __name__ == '__main__':
     PressKey(0x11)
     time.sleep(1)
     ReleaseKey(0x11)
     time.sleep(1)
+
+pyautogui.moveTo(670,180)#pokeball
+pyautogui.click()#pokeball

@@ -1,8 +1,12 @@
+import time
+import random
+import directkeys
+import cv2
 import numpy as np
 from PIL import ImageGrab
-import cv2
-import time
-from directkeys import PressKey, W, A, S, D
+
+import pyautogui
+
 
 def screen_record():
     template = cv2.imread('template.png', 0)
@@ -24,20 +28,40 @@ def screen_record():
         w, h = template.shape[::-1]
 
         res = cv2.matchTemplate(img_gray, template, cv2.TM_CCOEFF_NORMED)
-        threshold = 0.6
+        threshold = 0.4
         loc = np.where(res >= threshold)
 
         for pt in zip(*loc[::-1]):
             cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0, 255, 255), 2)
-            press= True
+            press = True
+            print pt
 
-        #if press == True:
-            #PressKey(W)
+
+        if press != True:
+            directkeys.PressKey(directkeys.A)
+            time.sleep(1 * random.random())
+            directkeys.ReleaseKey(directkeys.A)
+            directkeys.PressKey(directkeys.D)
+            time.sleep(1 * random.random())
+            directkeys.ReleaseKey(directkeys.D)
+            directkeys.PressKey(directkeys.FOUR)
+            time.sleep(1 * random.random())
+            directkeys.ReleaseKey(directkeys.FOUR)
+
+        else:
+            '''
+            directkeys.PressKey(directkeys.THREE)
+            time.sleep(1 * random.random())
+            directkeys.ReleaseKey(directkeys.THREE)
+            directkeys.click()
+         '''
+            pyautogui.moveTo(pt[0]+16,pt[1]+40+16)
 
         cv2.imshow('window',cv2.cvtColor(img_rgb, cv2.COLOR_BGR2RGB))
-        #time.sleep(0.5)
+
         if cv2.waitKey(25) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
-
             break
+
+
 screen_record()
