@@ -5,7 +5,7 @@
 
 import ctypes
 import time
-import win32api
+
 import pyautogui
 
 SendInput = ctypes.windll.user32.SendInput
@@ -83,11 +83,12 @@ def MouseMoveTo(x, y):
     command = Input(ctypes.c_ulong(0), ii_)
     ctypes.windll.user32.SendInput(1, ctypes.pointer(command), ctypes.sizeof(command))
 
+
+
+
 if __name__ == '__main__':
     PressKey(0x11)
     time.sleep(1)
     ReleaseKey(0x11)
     time.sleep(1)
 
-pyautogui.moveTo(670,180)#pokeball
-pyautogui.click()#pokeball
