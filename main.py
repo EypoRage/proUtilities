@@ -34,6 +34,9 @@ def template_match(template, img_gray, img_rgb,threshold):
 
 def screen_record(record):
     timestamp = 0
+    direction=""
+    global hasFalseSwiped
+    hasFalseSwiped = False
 
     templ_pkm = cv2.imread('template.png', 0)
     templ_in_fight = cv2.imread('templ_in_fight.png', 0)
@@ -59,14 +62,27 @@ def screen_record(record):
             # search for in fight
             in_fight, img_rgb, pt_fight = template_match(templ_in_fight, img_gray, img_rgb, 0.6)
             if in_fight:
-                directkeys.ReleaseKey(direction)
+                if direction != "":
+                    directkeys.ReleaseKey(direction)
                 #time.sleep(6)
                 # sarch for own pokemon
                 own_pkm_fainted, img_rgb, pt_own = template_match(templ_fainted, img_gray, img_rgb,0.9)
                 if not own_pkm_fainted:
                     # search for catch pokemon
-                    pkm_found, img_rgb, pt = template_match(templ_pkm, img_gray, img_rgb,0.4)
-                    if pkm_found:
+                    pkm_found, img_rgb, pt = template_match(templ_pkm, img_gray, img_rgb,0.3)
+                    if  pkm_found:
+                        if not hasFalseSwiped:
+                            time.sleep(5)
+                            pyautogui.press('1')
+                            time.sleep(1)
+                            pyautogui.press('1')
+                            hasFalseSwiped = True
+                        time.sleep(2)
+
+                        pyautogui.press('3')
+                        pyautogui.moveTo(650, 90)  # pokeball
+                        pyautogui.click()  # pokeball
+                        '''
                         if (not timestamp):
                             timestamp = time.time() + random.random()
                             direction = directkeys.THREE
@@ -74,11 +90,11 @@ def screen_record(record):
                         if (time.time() > timestamp):
                             timestamp = time.time() + random.random()
                             directkeys.ReleaseKey(direction)
-                            pyautogui.moveTo(670, 180)  # pokeball
+                            pyautogui.moveTo(650, 90)  # pokeball
                             pyautogui.click()  # pokeball
-                            pyautogui.moveTo(pt[0] + 16, pt[1] + 40 + 16)
+                            #pyautogui.moveTo(pt[0] + 16, pt[1] + 40 + 16)
                             timestamp = 0
-
+                        '''
                     else:
 
                         if (not timestamp):
@@ -95,9 +111,7 @@ def screen_record(record):
                     pyautogui.click() # logout
                     pyautogui.moveTo(320, 540)
                     pyautogui.click()  # login
-
             else:
-
                 if(not timestamp):
                     timestamp = time.time() + random.random()
                     direction = directkeys.A
@@ -111,7 +125,7 @@ def screen_record(record):
                     else:
                         direction = directkeys.A
                     directkeys.PressKey(direction)
-                    timestamp = 0
+                hasFalseSwiped = False
 
         else:
             keyboard.play(record, 1)
@@ -126,10 +140,10 @@ def screen_record(record):
             break
 record= ""
 print('should path be recorded?')
-if input() =='yes':
+if raw_input() =='yes':
     record = record_path()
     print('\npath recorded. do you want to play it now?')
-    if input() =='yes':
+    if raw_input() =='yes':
         time.sleep(3)
         keyboard.play(record,1)
 
