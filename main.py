@@ -6,6 +6,8 @@ import numpy as np
 from PIL import ImageGrab
 import pyautogui
 import keyboard
+from playsound import playsound
+
 
 
 def record_path():
@@ -33,12 +35,16 @@ def template_match(template, img_gray, img_rgb,threshold):
 
 
 def screen_record(record):
+    pyautogui.FAILSAFE = False
+
     timestamp = 0
     direction=""
     global hasFalseSwiped
     hasFalseSwiped = False
 
     templ_pkm = cv2.imread('template.png', 0)
+    templ_snivy = cv2.imread('snivy.png', 0)
+    templ_mofo = cv2.imread('mofo.png', 0)
     templ_in_fight = cv2.imread('templ_in_fight.png', 0)
     templ_own_pkm = cv2.imread('templ_own_pkm.png', 0)
     templ_fainted = cv2.imread('templ_fainted.png', 0)
@@ -69,18 +75,23 @@ def screen_record(record):
                 own_pkm_fainted, img_rgb, pt_own = template_match(templ_fainted, img_gray, img_rgb,0.9)
                 if not own_pkm_fainted:
                     # search for catch pokemon
-                    pkm_found, img_rgb, pt = template_match(templ_pkm, img_gray, img_rgb,0.3)
-                    if  pkm_found:
-                        if not hasFalseSwiped:
+                    pkm_found, img_rgb, pt = template_match(templ_snivy, img_gray, img_rgb,0.5)
+                    pkm2_found, img_rgb, pt = template_match(templ_mofo, img_gray, img_rgb,0.5)
+                    if pkm_found or pkm2_found:
+                        playsound('audio.mp3')
+
+                        hasFalseSwiped = False # encore
+                        if random.choice([True, False]) is True:
                             time.sleep(5)
                             pyautogui.press('1')
                             time.sleep(1)
                             pyautogui.press('1')
                             hasFalseSwiped = True
+
                         time.sleep(2)
 
                         pyautogui.press('3')
-                        pyautogui.moveTo(650, 90)  # pokeball
+                        pyautogui.moveTo(680, 150)  # pokeball
                         pyautogui.click()  # pokeball
                         '''
                         if (not timestamp):
