@@ -50,7 +50,7 @@ def screen_record(record):
     templ_pkm = cv2.imread('template.png', 0)
     templ_shiny = cv2.imread('shiny.png',0)
     templ_snivy = cv2.imread('snivy.png', 0)
-    templ_mofo = cv2.imread('mofo.png', 0)
+    templ_mofo = cv2.imread('slowpoke.png', 0)
     templ_in_fight = cv2.imread('templ_in_fight.png', 0)
     templ_own_pkm = cv2.imread('templ_own_pkm.png', 0)
     templ_fainted = cv2.imread('templ_fainted.png', 0)
@@ -62,7 +62,7 @@ def screen_record(record):
         # 800x600 windowed mode
         found=False
         # get image
-        printscreen = np.array(ImageGrab.grab(bbox=(0,40,800,640)))
+        printscreen = np.array(ImageGrab.grab(bbox=(0,0,2560,1440)))
         print('loop took {} seconds'.format(time.time()-last_time))
         last_time = time.time()
         # prepare compare
@@ -70,8 +70,7 @@ def screen_record(record):
         img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
 
 
-
-
+        """
         in_pokecenter, img_rgb, pt_pc = template_match(templ_pokecenter, img_gray, img_rgb, 0.8)
         if not in_pokecenter:
             # search for in fight
@@ -162,7 +161,16 @@ def screen_record(record):
 
         else:
             keyboard.play(record, 1)
+        """
 
+        # search for catch pokemon
+        shiny_found, img_rgb, pt_shiny = template_match(templ_shiny, img_gray, img_rgb, 0.9)
+        pkm_found, img_rgb, pt = template_match(templ_snivy, img_gray, img_rgb, 0.5)
+        pkm2_found, img_rgb, pt = template_match(templ_mofo, img_gray, img_rgb, 0.5)
+
+        if pkm_found or pkm2_found or shiny_found:
+            playsound('audio.mp3')
+            time.sleep(15)
 
         # render
         cv2.imshow('window',cv2.cvtColor(img_rgb, cv2.COLOR_BGR2RGB))
